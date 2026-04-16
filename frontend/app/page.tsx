@@ -53,6 +53,7 @@ export default function HomePage() {
   const [scrapeMsg, setScrapeMsg] = useState('');
   const [ingestInput, setIngestInput] = useState('');
   const [ingesting, setIngesting] = useState(false);
+  const [ingestProgress, setIngestProgress] = useState(0);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
   // Debounce search
@@ -138,15 +139,18 @@ export default function HomePage() {
       const res = await ingestBook(ingestInput.trim());
       setScrapeMsg(res.message);
       setIngestInput('');
+      setIngestProgress(0);
       
       let pollCount = 0;
       const pollTimer = setInterval(() => {
         loadBooks();
         loadStats();
         pollCount++;
+        setIngestProgress(pollCount);
         if (pollCount >= 4) { // 4 * 8 = 32 seconds max
           clearInterval(pollTimer);
           setIngesting(false);
+          setIngestProgress(0);
           setScrapeMsg('');
         }
       }, 8000);
@@ -159,18 +163,18 @@ export default function HomePage() {
   return (
     <div className="min-h-screen">
       {/* Hero */}
-      <div className="relative overflow-hidden px-4 pt-12 pb-8">
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-950/50 via-gray-950 to-purple-950/30 pointer-events-none" />
-        <div className="relative max-w-7xl mx-auto text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-600/20 border border-indigo-500/30 text-indigo-300 text-xs font-medium mb-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
-            AI-Powered Book Intelligence Platform
+      <div className="relative overflow-hidden px-4 pt-20 pb-12">
+        <div className="absolute inset-0 bg-gradient-to-b from-indigo-900/10 via-transparent to-transparent pointer-events-none fade-in" />
+        <div className="relative max-w-7xl mx-auto text-center space-y-6 flex flex-col items-center">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full cyber-glass border border-cyan-500/30 text-cyan-300 text-xs font-semibold mb-2 shadow-[0_0_15px_rgba(0,245,255,0.15)] fade-in">
+            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+            AI-Powered Intelligence Core
           </div>
-          <h1 className="text-4xl sm:text-5xl font-bold">
-            <span className="gradient-text">BookMind</span>
+          <h1 className="text-5xl md:text-7xl font-bold heading-font tracking-tight pb-2">
+            <span className="gradient-text">BookMind Platform</span>
           </h1>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Discover books with AI-generated insights. Ask questions, explore genres, and find your next read.
+          <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto font-light">
+            Constructed for absolute precision. Ingest metadata, extract semantic vectors, and interface directly with literary intelligence.
           </p>
         </div>
       </div>
@@ -179,40 +183,41 @@ export default function HomePage() {
         {/* Stats */}
         {stats && (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 fade-in">
-            <StatCard label="Total Books" value={stats.total_books} icon={BookOpen} color="border-indigo-500/30" />
+            <StatCard label="Total Books" value={stats.total_books} icon={BookOpen} color="border-cyan-500/30" />
             <StatCard label="AI Processed" value={stats.ai_processed} icon={Brain} color="border-purple-500/30" />
             <StatCard label="Genres" value={stats.unique_genres} icon={Tag} color="border-amber-500/30" />
           </div>
         )}
 
         {/* Smart Ingest - New Feature */}
-        <div className="glass rounded-2xl p-6 border border-indigo-500/20 bg-indigo-500/5 fade-in">
-          <div className="flex flex-col md:flex-row items-center gap-4">
-            <div className="hidden sm:flex w-12 h-12 rounded-xl bg-indigo-600/20 items-center justify-center text-indigo-400 shrink-0">
-              <Brain size={24} />
+        <div className="hyper-glass rounded-2xl p-6 fade-in shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+          <div className="flex flex-col md:flex-row items-center gap-6 relative z-10">
+            <div className="hidden sm:flex w-14 h-14 rounded-2xl shadow-[0_0_20px_rgba(0,245,255,0.2)] bg-[#101528] border border-cyan-500/40 items-center justify-center text-cyan-400 shrink-0 cyber-float">
+              <Brain size={26} />
             </div>
-            <div className="flex-1 space-y-1 text-center md:text-left">
-              <h3 className="text-lg font-semibold text-white">Smart Book Ingest</h3>
-              <p className="text-sm text-gray-400">Paste any Goodreads URL or Book Title to add it instantly using AI extraction.</p>
+            <div className="flex-1 space-y-1.5 text-center md:text-left">
+              <h3 className="text-xl font-bold heading-font text-white">Smart Ingestion Engine</h3>
+              <p className="text-sm text-cyan-100/60 font-light">Paste a Goodreads URL or Book Title for instant zero-shot metadata extraction.</p>
             </div>
-            <form onSubmit={handleIngest} className="w-full md:w-auto flex flex-1 gap-2 max-w-xl">
+            <form onSubmit={handleIngest} className="w-full md:w-auto flex flex-1 gap-3 max-w-xl">
               <div className="relative flex-1">
-                <Plus size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+                <Plus size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-cyan-500/50" />
                 <input
                   type="text"
-                  placeholder="e.g. https://www.goodreads.com/book/show/..."
+                  placeholder="https://www.goodreads.com/book/..."
                   value={ingestInput}
                   onChange={(e) => setIngestInput(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 bg-gray-950/50 border border-gray-700/60 rounded-xl text-sm focus:outline-none focus:border-indigo-500/60 transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-[#0a0614]/80 border border-cyan-500/20 rounded-xl text-sm focus:outline-none focus:border-cyan-400 focus:shadow-[0_0_15px_rgba(0,245,255,0.2)] transition-all font-medium placeholder-gray-600"
                 />
               </div>
               <button
                 type="submit"
                 disabled={ingesting || !ingestInput.trim()}
-                className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-sm font-semibold rounded-xl transition-all flex items-center gap-2 whitespace-nowrap"
+                className="px-6 py-3 bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 disabled:opacity-50 text-white text-sm font-bold tracking-wide rounded-xl transition-all flex items-center gap-2 whitespace-nowrap shadow-lg shadow-cyan-900/30"
               >
                 {ingesting ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
-                Add Book
+                Extract
               </button>
             </form>
           </div>
@@ -274,34 +279,61 @@ export default function HomePage() {
 
         {/* Scrape status */}
         {scrapeMsg && (
-          <div className="p-3 rounded-xl bg-indigo-600/20 border border-indigo-500/30 text-indigo-300 text-sm flex items-center gap-2">
+          <div className="p-3 rounded-xl bg-[#10081e] border border-purple-500/40 text-purple-300 text-sm flex items-center gap-2 shadow-[0_0_10px_rgba(181,55,242,0.1)]">
             <Brain size={14} />
             {scrapeMsg}
           </div>
         )}
 
+        {/* Dynamic AI Ingest Loader */}
+        {ingesting && (
+          <div className="hyper-glass rounded-2xl p-8 flex flex-col items-center justify-center space-y-6 mb-8 fade-in relative overflow-hidden">
+             <div className="absolute inset-0 bg-gradient-to-r from-cyan-900/20 to-purple-900/20 animate-pulse" />
+             <Loader2 size={44} className="text-cyan-400 animate-spin relative z-10" />
+             <div className="text-center space-y-2 relative z-10">
+               <h3 className="text-2xl font-bold heading-font text-white tracking-wide">Single Payload Ingestion Active</h3>
+               <p className="text-cyan-200 font-medium">
+                 {(() => {
+                   if (ingestProgress < 1) return 'Negotiating URL Context...';
+                   if (ingestProgress < 2) return 'Generative AI constructing Title & Genre structure...';
+                   if (ingestProgress < 3) return 'Writing dynamic abstract and isolating Sentiment...';
+                   return 'Chromadb Vectorizing 3072 semantic dimensions...';
+                 })()}
+               </p>
+               <p className="text-xs text-gray-500">System securely locked. The book will drop smoothly upon execution completion.</p>
+             </div>
+             <div className="w-full max-w-lg h-1.5 bg-[#080512] rounded-full overflow-hidden relative z-10 border border-gray-800">
+               <div 
+                 className="h-full bg-gradient-to-r from-cyan-400 to-purple-500 transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(0,245,255,0.8)]" 
+                 style={{ width: `${Math.min(100, Math.round((ingestProgress / 4) * 100))}%` }} 
+               />
+             </div>
+          </div>
+        )}
+
         {/* Dynamic AI Scrape Loader */}
         {scraping && (
-          <div className="glass rounded-2xl p-8 border border-indigo-500/30 flex flex-col items-center justify-center space-y-6 bg-indigo-900/10 mb-8 fade-in">
-            <Loader2 size={40} className="text-indigo-400 animate-spin" />
-            <div className="text-center space-y-2">
-              <h3 className="text-xl font-semibold text-white">AI Data Ingestion Active</h3>
-              <p className="text-indigo-300 font-medium">
+          <div className="hyper-glass rounded-2xl p-8 flex flex-col items-center justify-center space-y-6 mb-8 fade-in relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-900/20 to-pink-900/20 animate-pulse" />
+            <Loader2 size={44} className="text-purple-400 animate-spin relative z-10" />
+            <div className="text-center space-y-2 relative z-10">
+              <h3 className="text-2xl font-bold heading-font text-white tracking-wide">Batch AI Data Ingestion Active</h3>
+              <p className="text-purple-200 font-medium cyber-float text-sm mt-2">
                 {(() => {
-                  if (scrapeProgress < 1) return 'Initializing Headless Web Scraper...';
-                  if (scrapeProgress < 2) return 'Fetching Random Books from Catalogue...';
-                  if (scrapeProgress < 4) return 'Passing Book 1 to Gemini AI Engine...';
-                  if (scrapeProgress < 6) return 'Embedding Vector Chunks into ChromaDB...';
+                  if (scrapeProgress < 1) return 'Initializing...';
+                  if (scrapeProgress < 2) return 'Extracting Books...';
+                  if (scrapeProgress < 4) return 'Passing Book 1 to Neural Model...';
+                  if (scrapeProgress < 6) return 'Embedding Multi-Dimensional Semantic Vector Chunks...';
                   if (scrapeProgress < 8) return 'Processing Book 2 via JSON Native Abstraction...';
-                  if (scrapeProgress < 13) return 'Processing remaining books dynamically...';
-                  return 'Finalizing database sync...';
+                  if (scrapeProgress < 13) return 'Sequential pipeline processing...';
+                  return 'Finalizing vector allocations...';
                 })()}
               </p>
-              <p className="text-xs text-gray-400">Respecting strict AI API safety quotas. Books will auto-populate below as they finish.</p>
+              <p className="text-xs text-gray-500 mt-2">Enforcing strictly paced intervals. Books will securely propagate down below.</p>
             </div>
-            <div className="w-full max-w-md h-2 bg-gray-800/80 rounded-full overflow-hidden">
+            <div className="w-full max-w-lg h-1.5 bg-[#080512] rounded-full overflow-hidden relative z-10 border border-gray-800">
               <div 
-                className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-1000 ease-out" 
+                className="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(181,55,242,0.8)]" 
                 style={{ width: `${Math.min(100, Math.round((scrapeProgress / 16) * 100))}%` }} 
               />
             </div>

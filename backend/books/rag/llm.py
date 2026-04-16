@@ -207,8 +207,19 @@ Description: {book.description[:1200]}"""
         }
     except Exception as e:
         print(f"[Gemini] Error generating combined insights: {e}")
+        error_str = str(e).lower()
+        if '429' in error_str or 'exhausted' in error_str or 'quota' in error_str:
+            return {
+                'author': 'Google API Limit',
+                'summary': 'Batch Ingest aborted: Google Gemini API Daily Quota completely Exhausted! Google strictly caps the new 2.5-flash-lite free tier at exactly 20 requests per day per project. Please try again tomorrow.',
+                'genre': 'other',
+                'sentiment': 'neutral',
+                'sentiment_score': 0.0
+            }
+
         return {
-            'summary': f"An engaging work by {book.author}.",
+            'author': book.author if book.author else 'Unknown Author',
+            'summary': f"An engaging work by {book.author or 'Unknown Author'}.",
             'genre': 'other',
             'sentiment': 'neutral',
             'sentiment_score': 0.0

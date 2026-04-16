@@ -101,101 +101,115 @@ export default function BookDetailPage() {
   if (!book) return null;
 
   return (
-    <div className="min-h-screen max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-8">
-      {/* Back + Delete */}
-      <div className="flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 text-gray-400 hover:text-gray-200 transition-colors text-sm">
-          <ArrowLeft size={16} /> Back to Library
-        </Link>
-        <button
-          onClick={() => setShowDeleteConfirm(true)}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-500/20 border border-red-500/30 text-red-400 hover:bg-red-500/30 transition-all text-sm"
-        >
-          <Trash2 size={14} /> Delete
-        </button>
-      </div>
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Massive Cinematic Blurred Background */}
+      <div 
+        className="absolute top-0 left-0 w-full h-[60vh] opacity-20 pointer-events-none blur-3xl z-0"
+        style={{ backgroundImage: `url(${book.cover_image})`, backgroundSize: 'cover', backgroundPosition: 'center', filter: 'blur(80px)' }}
+      />
+      <div className="absolute top-0 left-0 w-full h-[60vh] bg-gradient-to-b from-transparent via-[#030206] to-[#030206] z-0 pointer-events-none" />
 
-      {/* Main card */}
-      <div className="glass rounded-2xl overflow-hidden border border-indigo-500/15 fade-in">
-        <div className="flex flex-col md:flex-row gap-0">
-          {/* Cover */}
-          <div className="md:w-64 flex-shrink-0">
-            <div className="relative h-80 md:h-full min-h-[320px] bg-gray-900 overflow-hidden">
-              <img
-                src={book.cover_image || 'https://via.placeholder.com/300x400/1e293b/6366f1?text=📖'}
-                alt={book.title}
-                className="w-full h-full object-cover"
-                onError={(e) => { (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x400/1e293b/6366f1?text=📖'; }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-gray-950/80 via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:to-gray-900/60" />
-            </div>
-          </div>
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 relative z-10 space-y-8 mt-10">
+        {/* Back + Delete */}
+        <div className="flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 text-cyan-400/80 hover:text-cyan-300 transition-colors text-sm font-medium">
+            <ArrowLeft size={16} /> Retreat to Core Archive
+          </Link>
+          <button
+            onClick={() => setShowDeleteConfirm(true)}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-500/20 border border-red-500/30 text-red-400 hover:bg-red-500/40 hover:shadow-[0_0_15px_rgba(239,68,68,0.3)] transition-all text-sm font-medium"
+          >
+            <Trash2 size={14} /> Purge Artifact
+          </button>
+        </div>
 
-          {/* Info */}
-          <div className="flex-1 p-6 md:p-8 space-y-5">
-            <div className="space-y-2">
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-100 leading-tight">{book.title}</h1>
-              <div className="flex items-center gap-1.5 text-gray-400">
-                <Users size={15} />
-                <span className="text-base">{book.author || 'Unknown Author'}</span>
+        {/* Main card */}
+        <div className="hyper-glass rounded-3xl overflow-hidden shadow-2xl shadow-indigo-900/10 fade-in">
+          <div className="flex flex-col md:flex-row gap-0">
+            {/* Cover */}
+            <div className="md:w-72 flex-shrink-0 p-6 md:p-8 flex justify-center items-center relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-900/20 to-purple-900/20 opacity-50 1" />
+              <div className="relative h-96 w-full shadow-2xl rounded-xl overflow-hidden border border-white/10 group">
+                <img
+                  src={book.cover_image || 'https://via.placeholder.com/300x400/1e293b/6366f1?text=📖'}
+                  alt={book.title}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  onError={(e) => { (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x400/1e293b/6366f1?text=📖'; }}
+                />
               </div>
             </div>
 
-            {/* Badges */}
-            <div className="flex flex-wrap gap-2">
-              <GenrePill genre={book.genre || 'other'} />
-              <SentimentBadge sentiment={book.sentiment || 'neutral'} />
-              {book.ai_processed && (
-                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border bg-indigo-600/20 border-indigo-500/40 text-sm text-indigo-300">
-                  <CheckCircle2 size={13} /> AI Processed
+            {/* Info */}
+            <div className="flex-1 p-6 md:p-8 md:pl-0 space-y-6 flex flex-col justify-center relative">
+              <div className="space-y-2">
+                <h1 className="text-3xl md:text-5xl font-bold heading-font text-white leading-tight tracking-tight drop-shadow-md">{book.title}</h1>
+                <div className="flex items-center gap-2 text-cyan-300 font-medium">
+                  <Users size={16} />
+                  <span className="text-lg">{book.author || 'Unknown Author'}</span>
                 </div>
-              )}
-            </div>
+              </div>
 
-            <StarRating rating={book.rating} />
+              {/* Badges */}
+              <div className="flex flex-wrap gap-3">
+                <div className={`genre-badge genre-${book.genre || 'other'} flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-bold tracking-wide uppercase`}>
+                  <Tag size={13} />
+                  {book.genre?.replace('-', ' ') || 'other'}
+                </div>
+                <SentimentBadge sentiment={book.sentiment || 'neutral'} />
+                {book.ai_processed && (
+                  <div className="flex items-center gap-2 px-4 py-1.5 rounded-full border bg-[#050b14] border-cyan-500/40 text-sm text-cyan-300 shadow-[0_0_10px_rgba(0,245,255,0.2)] font-medium">
+                    <CheckCircle2 size={14} className="text-cyan-400" /> AI Parsed
+                  </div>
+                )}
+              </div>
 
-            {book.reviews_count > 0 && (
-              <p className="text-xs text-gray-500">{book.reviews_count.toLocaleString()} reviews</p>
-            )}
+              <div className="bg-black/30 p-3 rounded-xl inline-flex items-center">
+                <StarRating rating={book.rating} />
+                {book.reviews_count > 0 && (
+                  <span className="text-xs text-gray-500 ml-3 pl-3 border-l border-white/10">{book.reviews_count.toLocaleString()} analyses</span>
+                )}
+              </div>
 
-            {/* Links */}
-            <div className="flex gap-3">
-              {book.book_url && (
-                <a href={book.book_url} target="_blank" rel="noopener noreferrer"
-                   className="flex items-center gap-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-sm text-white font-medium transition-all">
-                  <ExternalLink size={14} /> View on Open Library
-                </a>
-              )}
-              <Link href={`/qa?book_id=${book.id}`}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-600/30 hover:bg-purple-600/50 border border-purple-500/40 text-sm text-purple-300 font-medium transition-all">
-                <MessageSquare size={14} /> Ask About This Book
-              </Link>
+              {/* Links */}
+              <div className="flex flex-wrap gap-4 pt-2">
+                <Link href={`/qa?book_id=${book.id}`}
+                      className="flex items-center gap-2 px-6 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-sm text-[#030206] font-bold transition-all shadow-[0_0_20px_rgba(0,245,255,0.3)]">
+                  <MessageSquare size={16} /> Neural Query Protocol
+                </Link>
+                {book.book_url && (
+                  <a href={book.book_url} target="_blank" rel="noopener noreferrer"
+                     className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-sm text-white font-medium transition-all">
+                    <ExternalLink size={15} /> Access Source
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* AI Insights */}
-      <div className="grid md:grid-cols-2 gap-5">
-        {book.summary && (
-          <div className="glass rounded-2xl p-5 border border-indigo-500/15 space-y-3 fade-in">
-            <div className="flex items-center gap-2 text-indigo-300">
-              <Brain size={16} />
-              <h2 className="font-semibold text-sm uppercase tracking-wider">AI Summary</h2>
-            </div>
-            <p className="text-gray-300 text-sm leading-relaxed">{book.summary}</p>
-          </div>
-        )}
+        {/* AI Insights & Description */}
+        <div className="grid md:grid-flow-col gap-6" style={{ gridTemplateColumns: book.summary ? '1fr 1fr' : '1fr' }}>
+          {book.summary && (
+             <div className="hyper-glass rounded-3xl p-8 shadow-[0_0_30px_rgba(0,245,255,0.05)] border-t border-cyan-500/50 relative overflow-hidden fade-in">
+               <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+               <div className="flex items-center gap-3 text-cyan-400 mb-4 font-bold tracking-wider uppercase text-sm border-b border-cyan-500/20 pb-3">
+                 <Brain size={18} />
+                 <span>Primary Abstract Isolation</span>
+               </div>
+               <p className="text-cyan-50/90 text-base leading-relaxed font-light">{book.summary}</p>
+             </div>
+          )}
 
-        {book.description && (
-          <div className="glass rounded-2xl p-5 border border-gray-700/30 space-y-3 fade-in">
-            <div className="flex items-center gap-2 text-gray-400">
-              <BookOpen size={16} />
-              <h2 className="font-semibold text-sm uppercase tracking-wider">Description</h2>
+          {book.description && (
+            <div className="glass rounded-3xl p-8 border border-white/5 bg-[#080512]/50 relative overflow-hidden fade-in">
+              <div className="flex items-center gap-3 text-purple-400 mb-4 font-bold tracking-wider uppercase text-sm border-b border-purple-500/20 pb-3">
+                <BookOpen size={18} />
+                <span>Raw Source Schema</span>
+              </div>
+              <p className="text-gray-400 text-sm leading-relaxed whitespace-pre-wrap">{book.description}</p>
             </div>
-            <p className="text-gray-400 text-sm leading-relaxed">{book.description}</p>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Recommendations */}

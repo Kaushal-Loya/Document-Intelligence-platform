@@ -103,13 +103,13 @@ export default function QAClient() {
       {/* Header */}
       <div className="mb-6 fade-in space-y-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/30">
-              <Brain size={20} className="text-white" />
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-600 to-purple-600 flex items-center justify-center shadow-[0_0_20px_rgba(0,245,255,0.3)]">
+              <Brain size={22} className="text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold gradient-text">Ask BookMind AI</h1>
-              <p className="text-xs text-gray-500">Powered by Gemini 1.5 Flash + RAG pipeline</p>
+              <h1 className="text-3xl font-bold heading-font gradient-text tracking-wide drop-shadow-md">Ask BookMind Neural Engine</h1>
+              <p className="text-xs text-cyan-200/60 font-medium">Powered by Gemini AI + Dimension RAG Architecture</p>
             </div>
           </div>
           {messages.length > 0 && (
@@ -123,16 +123,16 @@ export default function QAClient() {
         </div>
 
         {/* Book filter */}
-        <div className="flex items-center gap-2 glass rounded-xl px-3 py-2 border border-indigo-500/15">
-          <BookOpen size={14} className="text-gray-500 flex-shrink-0" />
+        <div className="flex items-center gap-2 hyper-glass rounded-xl px-4 py-3 border border-cyan-500/20 shadow-md">
+          <BookOpen size={16} className="text-cyan-500/70 flex-shrink-0" />
           <select
             value={selectedBookId ?? ''}
             onChange={(e) => setSelectedBookId(e.target.value ? Number(e.target.value) : null)}
-            className="flex-1 bg-transparent text-sm text-gray-300 focus:outline-none"
+            className="flex-1 bg-transparent text-sm text-cyan-50 font-medium focus:outline-none"
           >
-            <option value="">Ask about all books in the library</option>
+            <option value="" className="bg-[#050b14] text-gray-300">Target Entire Archive Namespace</option>
             {books.map((b) => (
-              <option key={b.id} value={b.id}>{b.title}</option>
+              <option key={b.id} value={b.id} className="bg-[#050b14] text-gray-300">{b.title}</option>
             ))}
           </select>
         </div>
@@ -143,24 +143,24 @@ export default function QAClient() {
         <div className="flex-1 space-y-4 mb-4 min-h-[300px] max-h-[55vh] overflow-y-auto pr-1">
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full py-10 space-y-6 fade-in">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-purple-600/20 border border-indigo-500/30 flex items-center justify-center pulse-glow">
-                <Sparkles size={28} className="text-indigo-400" />
+              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500/20 to-purple-600/20 border border-cyan-500/40 flex items-center justify-center pulse-neon shadow-lg">
+                <Sparkles size={32} className="text-cyan-400" />
               </div>
-              <div className="text-center space-y-1">
-                <h2 className="text-lg font-semibold text-gray-300">Ask anything about your library</h2>
+              <div className="text-center space-y-1.5">
+                <h2 className="text-xl font-bold heading-font text-gray-200">Initiate Local Query Protocol</h2>
                 <p className="text-sm text-gray-500 max-w-sm">
-                  I search across all book descriptions, summaries, and metadata to answer your questions accurately.
+                  Neural search connects context across descriptions, abstracts, and metadata vectors.
                 </p>
               </div>
-              <div className="w-full grid gap-2">
+              <div className="w-full grid gap-3 max-w-xl mx-auto">
                 {SAMPLE_QUESTIONS.map((q) => (
                   <button
                     key={q}
                     onClick={() => sendMessage(q)}
                     disabled={loading}
-                    className="text-left px-4 py-2.5 rounded-xl glass border border-gray-700/40 text-sm text-gray-400 hover:text-gray-200 hover:border-indigo-500/40 transition-all disabled:opacity-50"
+                    className="text-left px-5 py-3 rounded-2xl cyber-glass border border-gray-700/60 text-sm text-gray-400 hover:text-cyan-100 hover:bg-cyan-900/10 hover:border-cyan-500/40 transition-all font-medium disabled:opacity-50"
                   >
-                    <span className="text-indigo-400 mr-2">→</span>{q}
+                    <span className="text-cyan-500 mr-3 font-bold">→</span>{q}
                   </button>
                 ))}
               </div>
@@ -169,16 +169,16 @@ export default function QAClient() {
             messages.map((msg) => (
               <div key={msg.id} className={`flex gap-3 fade-in ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 {msg.role === 'assistant' && (
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0 mt-1 shadow-md">
-                    <Bot size={14} className="text-white" />
+                  <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-cyan-600 to-indigo-600 flex items-center justify-center flex-shrink-0 mt-1 shadow-[0_0_15px_rgba(0,245,255,0.4)]">
+                    <Bot size={18} className="text-white" />
                   </div>
                 )}
 
-                <div className={`max-w-[80%] space-y-2 flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-                  <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed ${
+                <div className={`max-w-[85%] space-y-2 flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
+                  <div className={`px-5 py-3.5 rounded-3xl text-sm leading-relaxed ${
                     msg.role === 'user'
-                      ? 'bg-indigo-600 text-white rounded-br-sm'
-                      : 'glass border border-gray-700/40 text-gray-300 rounded-bl-sm'
+                      ? 'bg-gradient-to-tr from-cyan-800 to-purple-800 text-white rounded-br-sm shadow-[0_0_15px_rgba(181,55,242,0.2)]'
+                      : 'hyper-glass shadow-lg border border-cyan-500/20 text-gray-200 rounded-bl-sm'
                   }`}>
                     {msg.loading ? (
                       <div className="flex items-center gap-2 text-gray-400">
@@ -220,29 +220,29 @@ export default function QAClient() {
         </div>
 
         {/* Input box */}
-        <div className="glass rounded-2xl border border-indigo-500/20 p-3 fade-in">
+        <div className="hyper-glass rounded-3xl border border-cyan-500/30 p-3 fade-in shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
           <div className="flex gap-3 items-end">
             <textarea
               ref={inputRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Ask about books, genres, authors, recommendations..."
+              placeholder="Query dimensions, genres, metadata..."
               rows={2}
-              className="flex-1 bg-transparent text-sm text-gray-200 placeholder-gray-500 resize-none focus:outline-none leading-relaxed"
+              className="flex-1 bg-transparent text-sm font-medium text-gray-100 placeholder-gray-500 resize-none focus:outline-none leading-relaxed p-2"
             />
             <button
               onClick={() => sendMessage()}
               disabled={!input.trim() || loading}
-              className="flex-shrink-0 w-10 h-10 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-all shadow-md shadow-indigo-600/30 active:scale-95"
+              className="flex-shrink-0 w-12 h-12 rounded-2xl bg-cyan-600 hover:bg-cyan-500 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-all shadow-lg shadow-cyan-600/40 active:scale-95 text-white"
             >
               {loading
-                ? <Loader2 size={16} className="animate-spin text-white" />
-                : <Send size={16} className="text-white" />
+                ? <Loader2 size={18} className="animate-spin" />
+                : <Send size={18} />
               }
             </button>
           </div>
-          <p className="text-xs text-gray-600 mt-1.5">Enter to send · Shift+Enter for new line</p>
+          <p className="text-xs text-gray-600 mt-2 font-medium px-2">Enter to transmit · Shift+Enter to break line</p>
         </div>
       </div>
     </div>

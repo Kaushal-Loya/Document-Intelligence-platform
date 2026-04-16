@@ -12,15 +12,15 @@ export default function Navbar() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-gray-950/95 shadow-xl shadow-gray-950/50 backdrop-blur-xl border-b border-indigo-500/20">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#06030c]/90 shadow-xl shadow-[#020106]/80 backdrop-blur-2xl border-b border-cyan-500/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg group-hover:shadow-indigo-500/40 transition-shadow">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center shadow-[0_0_15px_rgba(0,245,255,0.4)] group-hover:shadow-[0_0_25px_rgba(181,55,242,0.6)] transition-shadow">
               <BookOpen size={16} className="text-white" />
             </div>
-            <span className="font-bold text-lg gradient-text">BookMind</span>
+            <span className="font-bold text-xl heading-font gradient-text tracking-wide">BookMind</span>
           </Link>
 
           {/* Nav links */}
@@ -31,10 +31,10 @@ export default function Navbar() {
                 <Link
                   key={href}
                   href={href}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all duration-300 ${
                     active
-                      ? 'bg-indigo-600/30 text-indigo-300 border border-indigo-500/40'
-                      : 'text-gray-400 hover:text-gray-100 hover:bg-white/5'
+                      ? 'bg-cyan-900/30 text-cyan-300 border border-cyan-500/50 shadow-[0_0_10px_rgba(0,245,255,0.2)]'
+                      : 'text-gray-400 hover:text-cyan-100 hover:bg-cyan-900/10'
                   }`}
                 >
                   <Icon size={15} />
