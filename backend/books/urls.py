@@ -6,7 +6,7 @@ urlpatterns = [
     # Book CRUD + listing
     path('books/', views.book_list, name='book-list'),
     path('books/<int:pk>/', views.book_detail, name='book-detail'),
-    path('books/<int:pk>/delete/', views.book_delete, name='book-delete'),
+    path('books/<int:pk>/destroy/', views.book_delete, name='book-delete'),
     path('books/<int:pk>/recommend/', views.book_recommend, name='book-recommend'),
 
     # Processing

@@ -80,7 +80,7 @@ export const fetchRecommendations = async (id: number): Promise<{ results: Book[
 };
 
 export const deleteBook = async (id: number): Promise<{ message: string }> => {
-  const res = await api.delete(`/books/${id}/delete/`);
+  const res = await api.delete(`/books/${id}/destroy/`);
   return res.data;
 };
 
