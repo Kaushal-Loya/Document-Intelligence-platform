@@ -13,16 +13,16 @@ The platform relies on two decoupled servers:
 Below are the internal state-archives of the BookMind interface.
 
 ![Nexus Dashboard](/frontend/public/Screenshot%202026-04-17%20160806.png)
-*Figure 1: The Core Library Nexus showing dynamic stats and recent ingestions.*
+*Figure 1*
 
 ![Neural Query](/frontend/public/Screenshot%202026-04-17%20160849.png)
-*Figure 2: The Neural Query Terminal executing RAG-based literary analysis.*
+*Figure 2*
 
 ![Insight Extraction](/frontend/public/Screenshot%202026-04-17%20161035.png)
-*Figure 3: Smart Metadata Isolation and deep sentiment mapping for a specific artifact.*
+*Figure 3*
 
 ![Batch Ingestion](/frontend/public/Screenshot%202026-04-17%20163910.png)
-*Figure 4: The Batch AI Ingestion engine in its active state.*
+*Figure 4*
 
 ---
 
