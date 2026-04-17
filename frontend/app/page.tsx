@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { fetchBooks, fetchStats, deleteBook, triggerScrape, ingestBook, Book, Stats } from '@/lib/api';
 import BookCard from '@/components/BookCard';
 import { Search, RefreshCw, Plus, BookOpen, Brain, Layers, Tag, Loader2, X, ChevronLeft, ChevronRight, Filter } from 'lucide-react';
@@ -55,12 +55,22 @@ export default function HomePage() {
   const [ingesting, setIngesting] = useState(false);
   const [ingestProgress, setIngestProgress] = useState(0);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const scrapeTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const ingestTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Debounce search
   useEffect(() => {
     const t = setTimeout(() => { setDebouncedSearch(search); setPage(1); }, 400);
     return () => clearTimeout(t);
   }, [search]);
+
+  // Cleanup timers on unmount
+  useEffect(() => {
+    return () => {
+      if (scrapeTimerRef.current) clearInterval(scrapeTimerRef.current);
+      if (ingestTimerRef.current) clearInterval(ingestTimerRef.current);
+    };
+  }, []);
 
   const loadBooks = useCallback(async () => {
     setLoading(true);
@@ -105,6 +115,16 @@ export default function HomePage() {
     }
   };
 
+  const stopScrape = () => {
+    if (scrapeTimerRef.current) {
+      clearInterval(scrapeTimerRef.current);
+      scrapeTimerRef.current = null;
+    }
+    setScraping(false);
+    setScrapeProgress(0);
+    setScrapeMsg('Scraping stopped by user.');
+  };
+
   const handleScrape = async () => {
     setScraping(true);
     setScrapeMsg('');
@@ -113,13 +133,14 @@ export default function HomePage() {
       const res = await triggerScrape(8);
       
       let pollCount = 0;
-      const pollTimer = setInterval(() => {
+      scrapeTimerRef.current = setInterval(() => {
         loadBooks();
         loadStats();
         pollCount++;
         setScrapeProgress(pollCount);
         if (pollCount >= 16) { // 16 * 8 = 128 seconds
-          clearInterval(pollTimer);
+          if (scrapeTimerRef.current) clearInterval(scrapeTimerRef.current);
+          scrapeTimerRef.current = null;
           setScraping(false);
           setScrapeMsg('');
         }
@@ -128,6 +149,16 @@ export default function HomePage() {
       setScraping(false);
       setScrapeMsg('Failed to start scraping.');
     }
+  };
+
+  const stopIngest = () => {
+    if (ingestTimerRef.current) {
+      clearInterval(ingestTimerRef.current);
+      ingestTimerRef.current = null;
+    }
+    setIngesting(false);
+    setIngestProgress(0);
+    setScrapeMsg('Ingestion stopped by user.');
   };
 
   const handleIngest = async (e: React.FormEvent) => {
@@ -142,13 +173,14 @@ export default function HomePage() {
       setIngestProgress(0);
       
       let pollCount = 0;
-      const pollTimer = setInterval(() => {
+      ingestTimerRef.current = setInterval(() => {
         loadBooks();
         loadStats();
         pollCount++;
         setIngestProgress(pollCount);
         if (pollCount >= 4) { // 4 * 8 = 32 seconds max
-          clearInterval(pollTimer);
+          if (ingestTimerRef.current) clearInterval(ingestTimerRef.current);
+          ingestTimerRef.current = null;
           setIngesting(false);
           setIngestProgress(0);
           setScrapeMsg('');
@@ -166,15 +198,11 @@ export default function HomePage() {
       <div className="relative overflow-hidden px-4 pt-20 pb-12">
         <div className="absolute inset-0 bg-gradient-to-b from-indigo-900/10 via-transparent to-transparent pointer-events-none fade-in" />
         <div className="relative max-w-7xl mx-auto text-center space-y-6 flex flex-col items-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full cyber-glass border border-cyan-500/30 text-cyan-300 text-xs font-semibold mb-2 shadow-[0_0_15px_rgba(0,245,255,0.15)] fade-in">
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-            AI-Powered Intelligence Core
-          </div>
           <h1 className="text-5xl md:text-7xl font-bold heading-font tracking-tight pb-2">
-            <span className="gradient-text">BookMind Platform</span>
+            <span className="gradient-text">Welcome to BookMind</span>
           </h1>
           <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto font-light">
-            Constructed for absolute precision. Ingest metadata, extract semantic vectors, and interface directly with literary intelligence.
+            A beautiful home for your books. Effortlessly organize your digital library, discover deep insights into your favorite stories, and experience the magic of reading.
           </p>
         </div>
       </div>
@@ -301,6 +329,12 @@ export default function HomePage() {
                  })()}
                </p>
                <p className="text-xs text-gray-500">System securely locked. The book will drop smoothly upon execution completion.</p>
+               <button
+                 onClick={stopIngest}
+                 className="mt-4 px-4 py-1.5 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-semibold hover:bg-red-500/20 transition-all flex items-center gap-2 mx-auto"
+               >
+                 <X size={14} /> Stop Process
+               </button>
              </div>
              <div className="w-full max-w-lg h-1.5 bg-[#080512] rounded-full overflow-hidden relative z-10 border border-gray-800">
                <div 
@@ -330,6 +364,12 @@ export default function HomePage() {
                 })()}
               </p>
               <p className="text-xs text-gray-500 mt-2">Enforcing strictly paced intervals. Books will securely propagate down below.</p>
+              <button
+                onClick={stopScrape}
+                className="mt-4 px-4 py-1.5 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-semibold hover:bg-red-500/20 transition-all flex items-center gap-2 mx-auto"
+              >
+                <X size={14} /> Stop Process
+              </button>
             </div>
             <div className="w-full max-w-lg h-1.5 bg-[#080512] rounded-full overflow-hidden relative z-10 border border-gray-800">
               <div 

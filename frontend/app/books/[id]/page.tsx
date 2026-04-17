@@ -113,13 +113,13 @@ export default function BookDetailPage() {
         {/* Back + Delete */}
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 text-cyan-400/80 hover:text-cyan-300 transition-colors text-sm font-medium">
-            <ArrowLeft size={16} /> Retreat to Core Archive
+            <ArrowLeft size={16} /> Back to Home
           </Link>
           <button
             onClick={() => setShowDeleteConfirm(true)}
             className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-500/20 border border-red-500/30 text-red-400 hover:bg-red-500/40 hover:shadow-[0_0_15px_rgba(239,68,68,0.3)] transition-all text-sm font-medium"
           >
-            <Trash2 size={14} /> Purge Artifact
+            <Trash2 size={14} /> Delete book
           </button>
         </div>
 

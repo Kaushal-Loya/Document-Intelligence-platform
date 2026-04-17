@@ -42,7 +42,7 @@ def _call_gemini(prompt: str, cache_key: str = None, max_tokens: int = 1024) -> 
         time.sleep(RATE_LIMIT_DELAY)  # respect free-tier rate limits
 
         response = client.models.generate_content(
-            model='models/gemini-2.5-flash-lite',
+            model='gemini-2.0-flash',
             contents=prompt,
             config=types.GenerateContentConfig(
                 max_output_tokens=max_tokens,
@@ -98,7 +98,9 @@ Answer:"""
 # ────────────────────────────────────────────────
 def gen_book_metadata(input_str: str) -> dict:
     """
-    Uses Gemini to extract or generate book metadata from a URL or title.
+    Core Smart Ingest AI handler.
+    Constructs a high-context prompt for Gemini to extract or synthesize book metadata.
+    Utilizes system instructions for Native JSON return format.
     """
     prompt = f"""Extract or generate accurate book metadata for: {input_str}
     
@@ -117,7 +119,7 @@ def gen_book_metadata(input_str: str) -> dict:
         time.sleep(RATE_LIMIT_DELAY)
         
         response = client.models.generate_content(
-            model='models/gemini-2.5-flash-lite',
+            model='gemini-2.0-flash',
             contents=prompt,
             config=types.GenerateContentConfig(
                 max_output_tokens=1500,
@@ -141,16 +143,17 @@ def gen_book_metadata(input_str: str) -> dict:
         clean_title = input_str.split('/')[-1].split('?')[0].replace('-', ' ').replace('_', ' ').title()
         if len(clean_title) < 3: clean_title = input_str
         
-        error_str = str(e).lower()
+        error_info = str(e)
+        error_str = error_info.lower()
         if '429' in error_str or 'exhausted' in error_str or 'quota' in error_str:
              return {
                  "title": clean_title, 
                  "author": "Google API Limit", 
-                 "description": "Smart Ingest aborted: Google Gemini API Daily Quota completely Exhausted! Google strictly caps the new 2.5-flash-lite free tier at exactly 20 requests per day per project. Please try again tomorrow.", 
+                 "description": "Smart Ingest aborted: Google Gemini API Daily Quota completely Exhausted!...", 
                  "genre": "other"
              }
 
-        return {"title": clean_title, "author": "Found via URL", "description": "AI extraction failed due to a structural error, but URL was captured.", "genre": "other"}
+        return {"title": clean_title, "author": "Found via URL", "description": f"AI extraction failed: {error_info[:100]}", "genre": "other"}
 
 
 # ────────────────────────────────────────────────
@@ -158,8 +161,9 @@ def gen_book_metadata(input_str: str) -> dict:
 # ────────────────────────────────────────────────
 def generate_all_insights(book) -> dict:
     """
-    Runs summary, genre, and sentiment generation in ONE single API call via Native JSON mode.
-    This radically cuts down API usage to prevent 429 Quota Exceeded errors.
+    Orchestrates the combined AI analytical pipeline. 
+    Performs summary isolation, genre classification, and sentiment mapping in a 
+    single atomic API call to minimize latency and manage token quotas.
     """
     if not book.description or len(book.description) < 5:
         return {
@@ -188,7 +192,7 @@ Description: {book.description[:1200]}"""
         time.sleep(RATE_LIMIT_DELAY) # Respect limit
         
         response = client.models.generate_content(
-            model='models/gemini-2.5-flash-lite',
+            model='gemini-2.0-flash',
             contents=prompt,
             config=types.GenerateContentConfig(
                 max_output_tokens=500,

@@ -230,8 +230,9 @@ def book_upload(request):
 @api_view(['POST'])
 def book_scrape(request):
     """
-    Triggers the scraper in a background thread.
-    Uses the Seed Archive for bulletproof availability.
+    Triggers the bulk book scraper. 
+    This process runs in a separate background thread to prevent UI blocking.
+    It scrapes data from books.toscrape.com and runs the full AI pipeline for each.
     """
     max_per_subject = int(request.data.get('max_per_subject', 5))
 
@@ -278,8 +279,9 @@ def book_scrape(request):
 @api_view(['POST'])
 def book_ingest(request):
     """
-    Accepts a URL or Title, uses AI-assisted scraping (Selenium + Gemini),
-    and saves the new book to the library.
+    Smart Ingest entry point. 
+    Accepts a raw input (URL or Title), then launches a background worker
+    to perform Gemini-assisted metadata isolation and ChromaDB vectorization.
     """
     input_str = request.data.get('input', '').strip()
     if not input_str:
